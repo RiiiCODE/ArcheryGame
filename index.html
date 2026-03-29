@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Archery Bullseye</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="stars"></canvas>
+<canvas id="pcanvas"></canvas>
+
+<div id="hud">
+  <div class="ht">⟡ ARCHERY</div>
+  <div class="hr">
+    <div class="sb"><div class="sl">Round</div><div class="sv" id="hr">1</div></div>
+    <div class="sb"><div class="sl">Score</div><div class="sv g" id="hs">0</div></div>
+    <div class="sb"><div class="sl">Best</div><div class="sv" id="hb">0</div></div>
+  </div>
+</div>
+
+<div id="apips"></div>
+<div id="hint">JOYSTICK = AIM POINT · HOLD SHOOT = CHARGE</div>
+
+<div id="ro">
+  <div class="rt" id="rt"></div>
+  <div class="rs" id="rs"></div>
+</div>
+
+<div id="go">
+  <h1>ROUND COMPLETE</h1>
+  <div class="fs" id="fsc">0</div>
+  <div class="fl">Total Score</div>
+  <div class="ar">
+    <div class="ai"><div class="av g" id="stb">0</div><div class="al">Bullseye</div></div>
+    <div class="ai"><div class="av e" id="sth">0</div><div class="al">Hit</div></div>
+    <div class="ai"><div class="av d" id="stm">0</div><div class="al">Miss</div></div>
+  </div>
+  <button id="rb">PLAY AGAIN</button>
+</div>
+
+<svg id="game" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 500" overflow="visible">
+<defs>
+  <g id="arrow">
+    <line x2="62" fill="none" stroke="#c8a96e" stroke-width="2.5"/>
+    <polygon fill="#c8a96e" points="66 0 58 2.5 56 0 58 -2.5"/>
+    <polygon fill="#f5c842" points="2 -3.5 -5 -3.5 -2 0 -5 3.5 2 3.5 6 0"/>
+    <line x1="58" x2="62" y1="-4" y2="0" stroke="#c8a96e" stroke-width="1.2" opacity=".6"/>
+    <line x1="58" x2="62" y1="4" y2="0" stroke="#c8a96e" stroke-width="1.2" opacity=".6"/>
+  </g>
+  <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+    <feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+  <filter id="glows" x="-100%" y="-100%" width="300%" height="300%">
+    <feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+  <linearGradient id="ag" x1="0%" y1="0%" x2="100%" y2="0%">
+    <stop offset="0%" stop-color="#f5c842" stop-opacity="0"/>
+    <stop offset="50%" stop-color="#f5c842" stop-opacity=".55"/>
+    <stop offset="100%" stop-color="#f5c842" stop-opacity="0"/>
+  </linearGradient>
+  <linearGradient id="sky" x1="0%" y1="0%" x2="0%" y2="100%">
+    <stop offset="0%" stop-color="#080812"/><stop offset="100%" stop-color="#16101f"/>
+  </linearGradient>
+  <linearGradient id="gnd" x1="0%" y1="0%" x2="0%" y2="100%">
+    <stop offset="0%" stop-color="#1e3a1e"/><stop offset="100%" stop-color="#0d1a0d"/>
+  </linearGradient>
+  <linearGradient id="skin" x1="0%" y1="0%" x2="0%" y2="100%">
+    <stop offset="0%" stop-color="#f5c19a"/><stop offset="100%" stop-color="#d4956a"/>
+  </linearGradient>
+  <clipPath id="mask">
+    <rect x="-100" y="-100" width="2000" height="700"/>
+  </clipPath>
+</defs>
+
+<rect width="1000" height="500" fill="url(#sky)"/>
+<circle cx="820" cy="65" r="36" fill="#fffde0" opacity=".07"/>
+<circle cx="820" cy="65" r="28" fill="#fffacc" opacity=".05"/>
+<path d="M0,340 L80,240 L160,295 L260,198 L370,288 L450,208 L560,308 L650,228 L750,328 L830,238 L920,318 L1000,258 L1000,500 L0,500Z" fill="#0f151c" opacity=".75"/>
+<path d="M0,368 L100,288 L200,338 L320,258 L420,318 L530,278 L630,348 L720,298 L820,358 L900,308 L1000,368 L1000,500 L0,500Z" fill="#0c1315" opacity=".85"/>
+<rect x="0" y="378" width="1000" height="122" fill="url(#gnd)"/>
+<line x1="0" y1="379" x2="1000" y2="379" stroke="#3a6a3a" stroke-width="1.5" opacity=".28"/>
+<g opacity=".38" fill="#2d5e2d">
+  <path d="M155,379 Q160,369 165,379"/><path d="M172,379 Q175,371 179,379"/><path d="M138,379 Q141,373 145,379"/>
+</g>
+
+<rect x="898" y="262" width="6" height="118" fill="#6b4423" rx="2"/>
+<rect x="893" y="374" width="14" height="6" fill="#5a3820" rx="2"/>
+<g id="target">
+  <ellipse cx="901" cy="298" rx="38" ry="38" fill="#f0f0f0" filter="url(#glow)"/>
+  <ellipse cx="901" cy="298" rx="28" ry="28" fill="#e63946"/>
+  <ellipse cx="901" cy="298" rx="20" ry="20" fill="#f0f0f0"/>
+  <ellipse cx="901" cy="298" rx="13" ry="13" fill="#e63946"/>
+  <ellipse cx="901" cy="298" rx="6" ry="6" fill="#f5c842" filter="url(#glows)"/>
+  <ellipse cx="895" cy="288" rx="7" ry="4" fill="#fff" opacity=".15"/>
+</g>
+
+<g id="stickman">
+  <ellipse cx="108" cy="382" rx="26" ry="5" fill="#000" opacity=".28"/>
+  <line x1="108" y1="346" x2="91" y2="380" stroke="#4a3728" stroke-width="5" stroke-linecap="round"/>
+  <line x1="91" y1="380" x2="77" y2="380" stroke="#4a3728" stroke-width="4" stroke-linecap="round"/>
+  <line x1="108" y1="346" x2="120" y2="380" stroke="#5a4535" stroke-width="5" stroke-linecap="round"/>
+  <line x1="120" y1="380" x2="135" y2="380" stroke="#5a4535" stroke-width="4" stroke-linecap="round"/>
+  <path d="M95,293 Q100,338 108,346 Q116,338 121,293" fill="#2d5a8a" stroke="#1e3d61" stroke-width="1"/>
+  <rect x="95" y="318" width="26" height="5" rx="2" fill="#1e3d61" opacity=".8"/>
+  <line x1="108" y1="303" x2="88" y2="289" stroke="#4a3728" stroke-width="4.5" stroke-linecap="round"/>
+  <line x1="88" y1="289" x2="88" y2="308" stroke="#4a3728" stroke-width="4" stroke-linecap="round"/>
+  <line x1="108" y1="303" x2="128" y2="287" stroke="#5a4535" stroke-width="4.5" stroke-linecap="round" id="afu"/>
+  <line x1="128" y1="287" x2="118" y2="274" stroke="#5a4535" stroke-width="4" stroke-linecap="round" id="afl"/>
+  <circle cx="118" cy="274" r="4" fill="url(#skin)"/>
+  <circle cx="108" cy="276" r="16" fill="url(#skin)" stroke="#c8956a" stroke-width="1"/>
+  <path d="M95,270 Q100,256 108,258 Q116,256 121,270" fill="#2a1a0a"/>
+  <ellipse cx="116" cy="275" rx="3.5" ry="3" fill="#1a0a00"/>
+  <circle cx="117" cy="274" r="1" fill="#fff"/>
+  <ellipse cx="93" cy="278" rx="3.5" ry="5" fill="#d4846a" stroke="#c8956a" stroke-width=".8"/>
+  <path d="M105,283 Q108,281 112,283" fill="none" stroke="#a0604a" stroke-width="1.4" stroke-linecap="round"/>
+  <path d="M113,270 Q116,268 120,270" fill="none" stroke="#2a1a0a" stroke-width="1.4" stroke-linecap="round"/>
+  <rect x="90" y="293" width="8" height="30" rx="4" fill="#8B4513" stroke="#6b3410" stroke-width="1" transform="rotate(-8,94,308)"/>
+  <line x1="87" y1="288" x2="89" y2="314" stroke="#c8a96e" stroke-width="1.5" opacity=".75"/>
+  <line x1="90" y1="286" x2="92" y2="313" stroke="#c8a96e" stroke-width="1.5" opacity=".75"/>
+  <line x1="93" y1="285" x2="94" y2="312" stroke="#f5c842" stroke-width="1.5" opacity=".75"/>
+</g>
+
+<g id="bow" pointer-events="none">
+  <path fill="none" stroke="#8B6914" stroke-width="5" stroke-linecap="round" d="M88,250 C86,237 86,215 88,200"/>
+  <path fill="none" stroke="#8B6914" stroke-width="5" stroke-linecap="round" d="M88,250 C86,263 86,285 88,300"/>
+  <path fill="none" stroke="#6b4a10" stroke-width="3" stroke-linecap="round" d="M88,200 L88,300" opacity=".4"/>
+  <polyline id="bstr" fill="none" stroke="#ddd" stroke-width="1.5" stroke-linecap="round" points="88,200 88,250 88,300" opacity=".9"/>
+  <line x1="88" y1="242" x2="88" y2="258" stroke="#f5c842" stroke-width="4" opacity=".65" stroke-linecap="round"/>
+</g>
+
+<path id="arc" fill="none" stroke="url(#ag)" stroke-width="2.5" d="" opacity="0" pointer-events="none"/>
+
+<g id="arrow-on-bow" pointer-events="none">
+  <use id="nocked-arrow" href="#arrow" opacity="0"/>
+</g>
+
+<g id="aim-dots" pointer-events="none" opacity="0">
+  <circle r="3" fill="#f5c842" opacity=".7"/>
+  <circle r="2.4" fill="#f5c842" opacity=".5"/>
+  <circle r="1.8" fill="#f5c842" opacity=".32"/>
+  <circle r="1.3" fill="#f5c842" opacity=".18"/>
+</g>
+
+<circle id="aim-cursor" r="5" fill="none" stroke="#f5c842" stroke-width="1.5" opacity="0" pointer-events="none"/>
+<circle id="aim-cursor-inner" r="2" fill="#f5c842" opacity="0" pointer-events="none"/>
+
+<g class="arrows" clip-path="url(#mask)" pointer-events="none"/>
+</svg>
+
+<div id="ctrl">
+  <div class="mb">
+    <div class="mr"><div class="mp"></div><button class="mvb" id="bu">▲</button><div class="mp"></div></div>
+    <div class="mr"><button class="mvb" id="bl">◀</button><div class="mp"></div><button class="mvb" id="br">▶</button></div>
+    <div class="mr"><div class="mp"></div><button class="mvb" id="bd">▼</button><div class="mp"></div></div>
+  </div>
+
+  <div id="jw">
+    <div id="jl">AIM</div>
+    <div id="jb"><div id="jr"></div><div id="js"></div></div>
+  </div>
+
+  <div id="sw">
+    <button id="shb">
+      <svg viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+      <span id="shbl">SHOOT</span>
+    </button>
+    <div id="pbg"><div id="pf"></div></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.19.1/TweenMax.min.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
