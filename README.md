@@ -107,14 +107,7 @@ python -m http.server 8080
 
 > Dark night sky · animated stars · SVG archer · glowing bullseye target · particle explosions on hit
 
-```
-⟡ ARCHERY                Round: 1  Score: 0  Best: 0
-
-        [Archer with bow] ————————————> [🎯 Target]
-
-  [◀▶ Move]    [Joystick AIM]    [🔥 SHOOT]
-```
-
+<img src="https://raw.githubusercontent.com/RiiiCODE/ArcheryGame/refs/heads/main/preview.png">
 ---
 
 ## 📄 License
